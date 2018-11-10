@@ -6,7 +6,10 @@ from datetime import datetime
 
 @bottle.route('/')
 def hello():
-    name = bottle.request.params['name']
+    if 'name' in bottle.request.params:
+        name = bottle.request.params['name']
+    else:
+        name = "world"
     return """<html><body>
         <h1>Hello, {0}!</h1>
         The time is {1}.</body></html>""".format(

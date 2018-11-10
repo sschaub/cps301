@@ -17,8 +17,8 @@ def hello():
     cursor.execute("""
     select ProdId, ProdName, Quantity, ProdNextShipDate
     from product
-    where Quantity < {0}
-    """.format(qty))
+    where Quantity < %s
+    """, (qty, ))
 
     # Retrieve results
     result = cursor.fetchall()
@@ -46,13 +46,15 @@ def hello():
         table += tableRow
 
     table += "</table>"
-    return """<html><body>
+    return HTML_DOC.format(
+            table)
+
+HTML_DOC = """<html><body>
         <form>
           Show products with quantity less than: <input type='text' name='qty' value=''>
           <input type='submit' value='Go!'>
         </form>
-        {0}</body></html>""".format(
-            table)
+        {0}</body></html>"""
 
 # Launch the BottlePy dev server
 if __name__ == "__main__":

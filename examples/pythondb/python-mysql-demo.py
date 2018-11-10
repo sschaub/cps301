@@ -1,7 +1,7 @@
 
 # Requires MySQL connector
 # Install from command line: 
-#    pip install mysql-connector==2.1.4
+#    pip install mysql-connector
 #
 # For docs, see: https://dev.mysql.com/doc/connector-python/en/
 # See PEP-249 for the API standard: https://www.python.org/dev/peps/pep-0249/
@@ -18,12 +18,32 @@ cursor = con.cursor()
 con.autocommit = True
 
 # Execute an INSERT/DELETE/UPDATE statement
+# cursor.execute("""
+#     update Product 
+#     set Quantity = Quantity + 1
+#     where ProdName = 'Fifi'
+# """)
+# print("Updated {} rows.".format(cursor.rowcount))
+
+desc = "O'Rourke"
+qty = 3
 cursor.execute("""
     update Product 
-    set Quantity = Quantity + 1
-    where ProdName = 'Fifi'
-""")
+    set Quantity = Quantity + %s
+    where ProdName = %s
+""", (qty, desc))
 print("Updated {} rows.".format(cursor.rowcount))
+
+# Danger: Sharks lurk here.
+
+# desc = desc.replace("'", "''")
+# cursor.execute(f"""
+#     update Product 
+#     set Quantity = Quantity + {qty}
+#     where ProdName = '{desc}'
+# """)
+# print("Updated {} rows.".format(cursor.rowcount))
+
 
 qty = 5
 # Execute a SELECT statement
@@ -36,6 +56,7 @@ cursor.execute("""
 
 # Retrieve results
 result = cursor.fetchall()
+print('result = ', result)
 
 print("Products with quantity < {}:\n".format(qty))
 for row in result:
