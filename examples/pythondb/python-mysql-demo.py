@@ -1,15 +1,16 @@
 
-# Requires the PyMySQL library
+# Requires the mysql.connector library
 # To use this app:
-#   pip install PyMySQL
+#   pip install mysql.connector
 # 
-# For docs, see: https://pymysql.readthedocs.io/en/latest/modules/index.html
+# For docs, see: https://dev.mysql.com/doc/connector-python/en/connector-python-examples.html
 # See PEP-249 for the API standard: https://www.python.org/dev/peps/pep-0249/
 
 # This example uses the simpledb database located in 
 # class/sampledb/simpledb_mysql.sql
 
 from mysql.connector import connect
+
 
 con = connect(user='root', password='passw0rd', database='simpledb')
 cursor = con.cursor()
@@ -68,8 +69,7 @@ result = cursor.callproc('AddNums', (5, 3, 0))
 print("Got stored procedure result: " + str(result[2]))
 
 
-
 cursor.close()
 con.close()
- 
+
 

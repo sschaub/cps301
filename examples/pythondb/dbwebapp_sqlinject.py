@@ -1,12 +1,12 @@
 # To use this app:
-#   pip install bottle PyMySQL
+#   pip install bottle mysql.connector
 
 # Try entering the following in the search box:
 #  3 or 1=1
 
 import bottle
 from datetime import datetime
-from pymysql import connect
+from mysql.connector import connect
 
 con = connect(user='root', password='passw0rd', database='simpledb')
 cursor = con.cursor()
