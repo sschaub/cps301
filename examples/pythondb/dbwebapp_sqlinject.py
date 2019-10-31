@@ -1,7 +1,8 @@
-# Requires the Bottle and PyMySQL libraries
 # To use this app:
 #   pip install bottle PyMySQL
 
+# Try entering the following in the search box:
+#  3 or 1=1
 
 import bottle
 from datetime import datetime
@@ -19,8 +20,8 @@ def hello():
     cursor.execute("""
     select ProdId, ProdName, Quantity, ProdNextShipDate
     from product
-    where Quantity < %s
-    """, (qty, ))
+    where Quantity < {0}
+    """.format(qty))  # Also try   ProdName = '{0}'
 
     # Retrieve results
     result = cursor.fetchall()
@@ -28,7 +29,7 @@ def hello():
     table = """
         <table>
         <tr>
-            <td>Product ID
+            <td>Product ID`
             <td>Product Name
             <td>Quantity
             <td>Next Ship Date

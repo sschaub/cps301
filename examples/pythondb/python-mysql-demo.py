@@ -1,9 +1,9 @@
 
-# Requires MySQL connector
-# Install from command line: 
-#    pip install mysql-connector
-#
-# For docs, see: https://dev.mysql.com/doc/connector-python/en/
+# Requires the PyMySQL library
+# To use this app:
+#   pip install PyMySQL
+# 
+# For docs, see: https://pymysql.readthedocs.io/en/latest/modules/index.html
 # See PEP-249 for the API standard: https://www.python.org/dev/peps/pep-0249/
 
 # This example uses the simpledb database located in 
