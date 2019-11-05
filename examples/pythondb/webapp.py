@@ -17,5 +17,5 @@ def hello():
 
 # Launch the BottlePy dev server
 if __name__ == "__main__":
-    bottle.run(host='localhost', debug=True)
+    bottle.run(host='', port=8080, debug=True)
 

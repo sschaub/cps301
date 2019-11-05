@@ -1,20 +1,24 @@
 # Requires the Bottle and MySQL libraries
 # To use this app:
-#   pip install bottle mysql.connector
+#   pip install mysql-connector-python
 
 
 import bottle
 from datetime import datetime
+import time
 from mysql.connector import connect
-
-con = connect(user='root', password='passw0rd', database='simpledb')
-cursor = con.cursor()
+import dbconfig
 
 @bottle.route('/')
 def hello():
     qty = 0
     if 'qty' in bottle.request.params:
         qty = bottle.request.params['qty']
+
+    # We don't close the following explicitly because they are automatically closed
+    # when the variables go out of scope when hello() returns
+    con = connect(user=dbconfig.DB_USER, password=dbconfig.DB_PASS, database='simpledb', host=dbconfig.DB_HOST) 
+    cursor = con.cursor() 
 
     cursor.execute("""
     select ProdId, ProdName, Quantity, ProdNextShipDate
@@ -60,5 +64,5 @@ HTML_DOC = """<html><body>
 
 # Launch the BottlePy dev server
 if __name__ == "__main__":
-    bottle.run(host='localhost', debug=True)
+    bottle.run(host='', port=8080, debug=True)
 

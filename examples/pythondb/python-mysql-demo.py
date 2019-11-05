@@ -1,7 +1,7 @@
 
-# Requires the mysql.connector library
+# Requires the mysql.connector Python library
 # To use this app:
-#   pip install mysql.connector
+#   pip install mysql-connector-python
 # 
 # For docs, see: https://dev.mysql.com/doc/connector-python/en/connector-python-examples.html
 # See PEP-249 for the API standard: https://www.python.org/dev/peps/pep-0249/
@@ -10,9 +10,9 @@
 # class/sampledb/simpledb_mysql.sql
 
 from mysql.connector import connect
+import dbconfig
 
-
-con = connect(user='root', password='passw0rd', database='simpledb')
+con = connect(user=dbconfig.DB_USER, password=dbconfig.DB_PASS, database='simpledb', host=dbconfig.DB_HOST)
 cursor = con.cursor()
 
 # Automatically commit INSERT/DELETE/UPDATE

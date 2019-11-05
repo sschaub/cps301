@@ -143,7 +143,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddNums`(IN num1 INT, IN num2 INT, OUT result INT)
+CREATE PROCEDURE `AddNums`(IN num1 INT, IN num2 INT, OUT result INT)
 BEGIN
   SET result = num1 + num2;
 END ;;
@@ -162,7 +162,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `GetProducts`()
+CREATE PROCEDURE `GetProducts`()
 BEGIN
   select * from product;
 END ;;
@@ -184,7 +184,6 @@ DELIMITER ;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `new_view` AS select `account`.`id` AS `id`,`account`.`balance` AS `balance` from `account` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;

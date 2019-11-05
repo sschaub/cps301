@@ -1,6 +1,3 @@
-# To use this app:
-#   pip install bottle mysql.connector
-
 # Try entering the following in the search box:
 #  3 or 1=1
 
@@ -17,6 +14,7 @@ def hello():
     if 'qty' in bottle.request.params:
         qty = bottle.request.params['qty']
 
+    # SQL Injection vulnerability here:
     cursor.execute("""
     select ProdId, ProdName, Quantity, ProdNextShipDate
     from product
