@@ -64,10 +64,19 @@ for row in result:
     (prodId, prodName, quantity, shipDate) = row
     print("{}: {} ({}) ships {}".format(prodId, prodName, quantity, shipDate))
 
-# Execute a stored procedure
+# Execute a stored procedure that returns an OUT parameter
 result = cursor.callproc('AddNums', (5, 3, 0))
+# Access the value of the OUT parameter (the third parameter)
 print("Got stored procedure result: " + str(result[2]))
 
+# Execute a stored procedure that returns a result set
+result = cursor.callproc('GetProducts')
+
+# Retrieve result set
+result_set = next(cursor.stored_results())
+result = result_set.fetchall()
+# print out the result
+print(result)
 
 cursor.close()
 con.close()
