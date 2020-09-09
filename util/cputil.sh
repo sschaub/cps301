@@ -16,7 +16,7 @@ function pdf_report_check {
 function sql_check {
   
     if [ -n "$QUERYDIR" ]; then
-      echo Running in local Docker... skip this check
+      echo Running in local Docker... skipping sql filename check
       return
     fi
 
@@ -35,7 +35,7 @@ function do_sql_test {
 
     SQL_TEST=$1
 
-    bash /cps301/util/startmysql.sh
+    bash /cps301/util/startmysql.sh &>/dev/null
 
     python3 $SQL_TEST/$SQL_TEST.py
 
