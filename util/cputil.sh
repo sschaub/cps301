@@ -35,11 +35,7 @@ function do_sql_test {
 
     SQL_TEST=$1
 
-    service mysql start &>/dev/null
-    while ! mysql ordentry -e "show tables" &>/dev/null
-    do
-      sleep 1
-    done
+    bash /cps301/util/startmysql.sh
 
     python3 $SQL_TEST/$SQL_TEST.py
 
