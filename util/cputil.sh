@@ -4,7 +4,7 @@
 ###################################################################################### 
 
 function pdf_report_check {
-  if file $1 | grep "PDF document"; then
+  if file $1 | grep "PDF document" &>/dev/null; then
     result=true
   else
     result=false  
