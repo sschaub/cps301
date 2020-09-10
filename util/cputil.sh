@@ -45,6 +45,7 @@ function do_sql_test {
 if ! type TestOutput &>/dev/null
 then
 function TestOutput {
-  echo "$*"
+  echo "TestOutput result: $1 $2 Pass: $3 Log: $4"
 }
+export -f TestOutput
 fi

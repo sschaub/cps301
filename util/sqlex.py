@@ -1,4 +1,4 @@
-from subprocess import run, check_output, STDOUT, PIPE
+from subprocess import run, check_output, STDOUT, PIPE, Popen
 from os.path import exists
 import os.path, os
 import re
@@ -66,7 +66,7 @@ def checkresult(testname, output):
   else:
     result = FAIL
     points = 0
-    output = 'Expected Columns: ' + EXPECTED[0]
+    output = 'Expected Columns: ' + ','.join(col.strip() for col  in EXPECTED[0].split('\t'))
 
   CHK_COL = makeResult('Column Check', result, points, output)
 
@@ -94,16 +94,22 @@ def checkresult(testname, output):
         num_match += 1
 
     output = (f'Expected {len(ACTUAL_ROWS)} rows.\n' +
-             f'{num_match} result row(s) were in the expected results (ignoring sort order).')
+             f'{num_match} row(s) matched the expected results.')
     # if num_match == len(ACTUAL_ROWS):
     #   num_match -= SORT_DEDUCT
     # points = math.floor(MAX_CORRECT_POINTS * (num_match / len(ACTUAL_ROWS)))
     if num_match > 0:
-      if num_match == len(ACTUAL_ROWS):
+      if num_match == len(ACTUAL_ROWS) and len(EXPECTED_ROWS) == len(ACTUAL_ROWS):
+        output = (f'Almost! Output rows contain correct data, but are not in the right order.')
         points = POINTS_MAX_CORRECT + POINTS_SORT_DEDUCT
+      elif num_match == len(EXPECTED_ROWS):
+        output = (f'Almost! Output contains correct rows, but also has extra rows.')
+        points = POINTS_MAX_CORRECT / 2
       else:
         points = POINTS_MAX_CORRECT / 2
+        
     else:
+      output = 'None of your output rows matched the expected output. :('
       points = 0
 
   CHK_ROW = makeResult('Results Check', result, points, output)  
@@ -126,17 +132,22 @@ def printReport(results):
   for result in results:
     print('*************************************************')
     id = result['id']
-    print(f'Test {id} Details')
+    outstr = f'Test {id} Details\n'
+    allpassed = True
     for subtest in result['results']:
       test, passfail, output = subtest['test'], subtest['result'], subtest['output']
+      if passfail == FAIL:
+        allpassed = False
       if output.strip():
-        print(f'\n   {test:<20}: {passfail:<10} ')
-        print( '   Output:')
+        outstr += f'\n   {test:<20}: {passfail:<10} \n'
         rows = output.split('\n')
         if len(rows) > MAX_OUTPUT_DISPLAY_ROWS:
           rows = rows[:MAX_OUTPUT_DISPLAY_ROWS] + ['... additional output not displayed ...']
         for row in rows:
-          print('      ', row.replace('\t', '\t | '))
+          outstr += '      ' + row.replace('\t', ' | ') + '\n'
+
+    print(outstr)
+    report_result('Query', id, allpassed, outstr)
 
   return totalPoints
 
@@ -186,3 +197,6 @@ def runTests(tests):
     print('No q*.sql files found.')
     exit(1)
 
+def report_result(category, case, res, logs=''):
+  reporter = ("TestOutput \"%s\" \"%s\" %s \"%s\"") % (category, case, "true" if res else "false", logs)
+  Popen(['/bin/bash', '-c', reporter])
