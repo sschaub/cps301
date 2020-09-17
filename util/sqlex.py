@@ -24,10 +24,10 @@ def runCmd(cmd, **kwargs):
     result = run(cmd, stdout=PIPE, stderr=STDOUT, shell=True, universal_newlines=True, **kwargs)
     return result
 
-def runsql(testname):
+def runsql(testname, sql):
 
   logfile = testname + '.log'
-  result = runCmd('mysql --column-names ordentry', stdin=open(os.path.join(QUERYDIR, testname + '.sql')))
+  result = runCmd('mysql --column-names ordentry', input=sql)
 
   output = result.stdout.strip()
 
@@ -156,7 +156,7 @@ def printReport(results):
 
   return totalPoints
 
-def runTests(tests, ignoreSortTests=[]):
+def runTests(tests, ignoreSortTests=[], precheckTests=None):
 
   #results = [{ 'id': 'q1', 'results': [ 
   #              { 'test': 'Syntax Check', 'result': 'OK', 'points': .5, 'output': '...' }, 
@@ -168,16 +168,22 @@ def runTests(tests, ignoreSortTests=[]):
   num_files_found = 0
   for test in tests:
     
-    if exists(os.path.join(QUERYDIR, test + '.sql')):
+    sqlFile = os.path.join(QUERYDIR, test + '.sql')
+    if exists(sqlFile):
+      sql = open(sqlFile).read()
       num_files_found += 1
-      CHK_SYNTAX = runsql(test)
+      CHK_SYNTAX = runsql(test, sql)
     else:
       CHK_SYNTAX = makeResult('Execute Query', FAIL, 0, f'{test}.sql not submitted')
     
     if CHK_SYNTAX['result'] == OK:
       num_syntax_ok += 1
-      CHK_COL, CHK_ROW = checkresult(test, CHK_SYNTAX['output'], test in ignoreSortTests)
-      result = [CHK_SYNTAX, CHK_COL, CHK_ROW]
+      result = None
+      if precheckTests:
+        result = precheckTests(test, sql)
+      if not result:
+        CHK_COL, CHK_ROW = checkresult(test, CHK_SYNTAX['output'], test in ignoreSortTests)
+        result = [CHK_SYNTAX, CHK_COL, CHK_ROW]
     else:
       result = [CHK_SYNTAX]
 
