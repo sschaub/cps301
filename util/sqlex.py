@@ -52,7 +52,7 @@ def getRows(output):
   #print(output)
   return output[1:]
 
-def checkresult(testname, output):
+def checkresult(testname, output, ignoreSort=False):
   ACTUAL = [row.strip() for row in output.split('\n')]
   EXPECTED = open(os.path.join(EXPDIR, testname + '.exp')).readlines()
   EXPECTED = [row.strip() for row in EXPECTED]
@@ -93,15 +93,20 @@ def checkresult(testname, output):
       if row in ACTUAL_ROWS:
         num_match += 1
 
-    output = (f'Expected {len(ACTUAL_ROWS)} rows.\n' +
+    output = (f'Expected {len(EXPECTED_ROWS)} rows.\n' +
              f'{num_match} row(s) matched the expected results.')
     # if num_match == len(ACTUAL_ROWS):
     #   num_match -= SORT_DEDUCT
     # points = math.floor(MAX_CORRECT_POINTS * (num_match / len(ACTUAL_ROWS)))
     if num_match > 0:
       if num_match == len(ACTUAL_ROWS) and len(EXPECTED_ROWS) == len(ACTUAL_ROWS):
-        output = (f'Almost! Output rows contain correct data, but are not in the right order.')
-        points = POINTS_MAX_CORRECT + POINTS_SORT_DEDUCT
+        if ignoreSort:
+          result = OK
+          points = POINTS_MAX_CORRECT
+          output = ''
+        else:
+          output = (f'Almost! Output rows contain correct data, but are not in the right order.')
+          points = POINTS_MAX_CORRECT + POINTS_SORT_DEDUCT
       elif num_match == len(EXPECTED_ROWS):
         output = (f'Almost! Output contains correct rows, but also has extra rows.')
         points = POINTS_MAX_CORRECT / 2
@@ -151,7 +156,7 @@ def printReport(results):
 
   return totalPoints
 
-def runTests(tests):
+def runTests(tests, ignoreSortTests=[]):
 
   #results = [{ 'id': 'q1', 'results': [ 
   #              { 'test': 'Syntax Check', 'result': 'OK', 'points': .5, 'output': '...' }, 
@@ -171,7 +176,7 @@ def runTests(tests):
     
     if CHK_SYNTAX['result'] == OK:
       num_syntax_ok += 1
-      CHK_COL, CHK_ROW = checkresult(test, CHK_SYNTAX['output'])
+      CHK_COL, CHK_ROW = checkresult(test, CHK_SYNTAX['output'], test in ignoreSortTests)
       result = [CHK_SYNTAX, CHK_COL, CHK_ROW]
     else:
       result = [CHK_SYNTAX]
