@@ -1,19 +1,21 @@
 # Requires the Bottle and MySQL libraries
 # To use this app:
 #   pip install mysql-connector-python
+#   pip install flask
 
 
-import bottle
+from flask import Flask, request
 from datetime import datetime
 import time
 from mysql.connector import connect
 import dbconfig
 
-@bottle.route('/')
+app = Flask(__name__)
+
+@app.route('/')
 def hello():
     qty = 0
-    if 'qty' in bottle.request.params:
-        qty = bottle.request.params['qty']
+    qty = request.args.get('qty')
 
     # We don't close the following explicitly because they are automatically closed
     # when the variables go out of scope when hello() returns
@@ -21,48 +23,53 @@ def hello():
     cursor = con.cursor() 
 
     cursor.execute("""
-    select ProdId, ProdName, Quantity, ProdNextShipDate
-    from product
-    where Quantity < %s
+        select ProdId, ProdName, Quantity, ProdNextShipDate
+        from product
+        where Quantity < %s
     """, (qty, ))
+
+    # SQL Injection vulnerability here:
+    # cursor.execute(f"""
+    # select ProdId, ProdName, Quantity, ProdNextShipDate
+    # from product
+    # where Quantity < {qty}
+    # """)  # Also try   ProdName = '{0}'    
 
     # Retrieve results
     result = cursor.fetchall()
 
-    table = """
-        <table>
-        <tr>
-            <td>Product ID
-            <td>Product Name
-            <td>Quantity
-            <td>Next Ship Date
-        </tr>
-        """
-
+    tableRows = ""
     for row in result:
         (prodId, prodName, quantity, shipDate) = row
-        tableRow = """
+        tableRow = f"""
         <tr>
-            <td>{0}
-            <td>{1}
-            <td>{2}
-            <td>{3}
+            <td>{prodId}
+            <td>{prodName}
+            <td>{quantity}
+            <td>{shipDate}
         </tr>
-        """.format(prodId, prodName, quantity, shipDate)
-        table += tableRow
+        """
+        tableRows += tableRow
 
-    table += "</table>"
-    return HTML_DOC.format(
-            table)
+    return HTML_DOC.format(tableRows)
 
 HTML_DOC = """<html><body>
         <form>
           Show products with quantity less than: <input type='text' name='qty' value=''>
           <input type='submit' value='Go!'>
         </form>
-        {0}</body></html>"""
+        <table border='1'>
+        <tr>
+            <td>Product ID
+            <td>Product Name
+            <td>Quantity
+            <td>Next Ship Date
+        </tr>        
+        {0}
+        </table>
+        </body></html>"""
 
-# Launch the BottlePy dev server
+# Launch the local web server
 if __name__ == "__main__":
-    bottle.run(host='', port=8080, debug=True)
-
+    app.run(host='localhost', debug=True)
+    

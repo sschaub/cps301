@@ -1,13 +1,15 @@
 # To use this app:
-#   pip install bottle
+#   pip install flask
 
-import bottle
+from flask import Flask, request
 from datetime import datetime
 
-@bottle.route('/')
+app = Flask(__name__)
+
+@app.route('/')
 def hello():
-    if 'name' in bottle.request.params:
-        name = bottle.request.params['name']
+    if 'name' in request.args:
+        name = request.args['name']
     else:
         name = "world"
     return """<html><body>
@@ -15,7 +17,7 @@ def hello():
         The time is {1}.</body></html>""".format(
             name, str(datetime.now()))
 
-# Launch the BottlePy dev server
+# Launch the local web server
 if __name__ == "__main__":
-    bottle.run(host='', port=8080, debug=True)
-
+    app.run(host='localhost', debug=True)
+    

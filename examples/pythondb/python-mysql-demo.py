@@ -19,12 +19,12 @@ cursor = con.cursor()
 con.autocommit = True
 
 # Execute an INSERT/DELETE/UPDATE statement
-# cursor.execute("""
-#     update Product 
-#     set Quantity = Quantity + 1
-#     where ProdName = 'Fifi'
-# """)
-# print("Updated {} rows.".format(cursor.rowcount))
+cursor.execute("""
+    update Product 
+    set Quantity = Quantity + 1
+    where ProdName = 'Fifi'
+""")
+print("Updated {} rows.".format(cursor.rowcount))
 
 desc = "O'Rourke"
 qty = 3
@@ -36,14 +36,14 @@ cursor.execute("""
 print("Updated {} rows.".format(cursor.rowcount))
 
 # Danger: Sharks lurk here.
-
+desc = input('Name of product:')
 # desc = desc.replace("'", "''")
-# cursor.execute(f"""
-#     update Product 
-#     set Quantity = Quantity + {qty}
-#     where ProdName = '{desc}'
-# """)
-# print("Updated {} rows.".format(cursor.rowcount))
+cursor.execute(f"""
+    update Product 
+    set Quantity = Quantity + {qty}
+    where ProdName = '{desc}'
+""")
+print("Updated {} rows.".format(cursor.rowcount))
 
 
 qty = 5
