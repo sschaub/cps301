@@ -5,6 +5,8 @@ from subprocess import Popen
 
 def report_result(category, case, res, logs=''):
 
+  if logs:
+      logs = logs.replace('"', '\"')
   reporter = ("TestOutput \"%s\" \"%s\" %s \"%s\"") % (category, case, "true" if res == 'passed' else "false", logs)
   Popen(['/bin/bash', '-c', reporter])
     
