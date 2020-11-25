@@ -12,7 +12,7 @@
 from mysql.connector import connect
 import dbconfig
 
-con = connect(user=dbconfig.DB_USER, password=dbconfig.DB_PASS, database='simpledb', host=dbconfig.DB_HOST)
+con = connect(user=dbconfig.DB_USER, password=dbconfig.DB_PASS, database=dbconfig.DB_NAME, host=dbconfig.DB_HOST)
 cursor = con.cursor()
 
 # Automatically commit INSERT/DELETE/UPDATE

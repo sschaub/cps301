@@ -19,8 +19,9 @@ def hello():
 
     # We don't close the following explicitly because they are automatically closed
     # when the variables go out of scope when hello() returns
-    con = connect(user=dbconfig.DB_USER, password=dbconfig.DB_PASS, database='simpledb', host=dbconfig.DB_HOST) 
+    con = connect(user=dbconfig.DB_USER, password=dbconfig.DB_PASS, database=dbconfig.DB_NAME, host=dbconfig.DB_HOST) 
     cursor = con.cursor() 
+    con.autocommit = True
 
     cursor.execute("""
         select ProdId, ProdName, Quantity, ProdNextShipDate
